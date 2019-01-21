@@ -36,6 +36,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         sceneView.scene.rootNode.addChildNode(node)
         
+        sceneView.autoenablesDefaultLighting = true
+        
 //        // Create a new scene
 //        let scene = SCNScene(named: "art.scnassets/ship.scn")!
 //
