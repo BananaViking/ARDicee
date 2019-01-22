@@ -16,9 +16,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
         
-        // Set the view's delegate
+        self.sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
         sceneView.delegate = self
         
 //        let cube = SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0.01)
@@ -54,9 +53,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         super.viewWillAppear(animated)
         
         let configuration = ARWorldTrackingConfiguration()
-        
         configuration.planeDetection = .horizontal
-
         sceneView.session.run(configuration)
     }
     
@@ -68,9 +65,21 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         if anchor is ARPlaneAnchor {
-            print("Plane detected.")
+            let planeAnchor = anchor as! ARPlaneAnchor
+            
+            let plane = SCNPlane(width: CGFloat(planeAnchor.extent.x), height: CGFloat(planeAnchor.extent.z))
+            
+            let planeNode = SCNNode()
+            planeNode.position = SCNVector3(planeAnchor.center.x, 0, planeAnchor.center.z)
+            
+            // MakeRotation angle is in counter-clockwise radians, so to lay the vertical plan flat for horizontal plane need to adjust by 90degrees or pi/2 radians and negative to make it clockwise
+            planeNode.transform = SCNMatrix4MakeRotation(-Float.pi/2, 1, 0, 0)
+            
+            
         } else {
             return
         }
     }
+    
+    
 }
