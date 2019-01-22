@@ -12,7 +12,18 @@ import ARKit
 
 class ViewController: UIViewController, ARSCNViewDelegate {
 
+    var diceArray = [SCNNode]()
+    
     @IBOutlet var sceneView: ARSCNView!
+    
+    @IBAction func rollAgain(_ sender: UIBarButtonItem) {
+        rollAll()
+    }
+    
+    // shake the phone calls rollAll()
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        rollAll()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,16 +85,31 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                     diceNode.position = SCNVector3(hitResult.worldTransform.columns.3.x,
                                                    hitResult.worldTransform.columns.3.y + diceNode.boundingSphere.radius,
                                                    hitResult.worldTransform.columns.3.z)
+                    
+                    diceArray.append(diceNode)
+                    
                     sceneView.scene.rootNode.addChildNode(diceNode)
                     
-                    // create random number between 1 and 4 for dice sides and rotate by 90 degrees
-                    // don't need to rotate on y axis because spinning the dice around doesn't change value
-                    let randomX = CGFloat(Float(arc4random_uniform(4) + 1) * (Float.pi/2))
-                    let randomZ = CGFloat(Float(arc4random_uniform(4) + 1) * (Float.pi/2))
-                    
-                    // * 3 increases the amount of rotation to make the roll faster
-                    diceNode.runAction(SCNAction.rotateBy(x: randomX * 3, y: 0, z: randomZ * 3, duration: 0.5))
+                    roll(dice: diceNode)
                 }
+            }
+        }
+    }
+    
+    func roll(dice: SCNNode) {
+        // create random number between 1 and 4 for dice sides and rotate by 90 degrees
+        // don't need to rotate on y axis because spinning the dice around doesn't change value
+        let randomX = CGFloat(Float(arc4random_uniform(4) + 1) * (Float.pi/2))
+        let randomZ = CGFloat(Float(arc4random_uniform(4) + 1) * (Float.pi/2))
+        
+        // * 3 increases the amount of rotation to make the roll faster
+        dice.runAction(SCNAction.rotateBy(x: randomX * 3, y: 0, z: randomZ * 3, duration: 0.5))
+    }
+    
+    func rollAll() {
+        if !diceArray.isEmpty {
+            for dice in diceArray {
+                roll(dice: dice)
             }
         }
     }
