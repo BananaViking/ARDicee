@@ -17,8 +17,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
         sceneView.delegate = self
+        
+        // uncomment following line to enable showFeaturePoints
+//        self.sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
+        
         
 //        let cube = SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0.01)
         
@@ -72,6 +75,14 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                                                    hitResult.worldTransform.columns.3.y + diceNode.boundingSphere.radius,
                                                    hitResult.worldTransform.columns.3.z)
                     sceneView.scene.rootNode.addChildNode(diceNode)
+                    
+                    // create random number between 1 and 4 for dice sides and rotate by 90 degrees
+                    // don't need to rotate on y axis because spinning the dice around doesn't change value
+                    let randomX = CGFloat(Float(arc4random_uniform(4) + 1) * (Float.pi/2))
+                    let randomZ = CGFloat(Float(arc4random_uniform(4) + 1) * (Float.pi/2))
+                    
+                    // * 3 increases the amount of rotation to make the roll faster
+                    diceNode.runAction(SCNAction.rotateBy(x: randomX * 3, y: 0, z: randomZ * 3, duration: 0.5))
                 }
             }
         }
