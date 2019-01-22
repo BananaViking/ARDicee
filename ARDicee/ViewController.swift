@@ -75,7 +75,12 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             // MakeRotation angle is in counter-clockwise radians, so to lay the vertical plan flat for horizontal plane need to adjust by 90degrees or pi/2 radians and negative to make it clockwise
             planeNode.transform = SCNMatrix4MakeRotation(-Float.pi/2, 1, 0, 0)
             
+            let gridMaterial = SCNMaterial()
+            gridMaterial.diffuse.contents = UIImage(named: "art.scnassets/grid.png")
+            plane.materials = [gridMaterial]
+            planeNode.geometry = plane
             
+            node.addChildNode(planeNode)
         } else {
             return
         }
