@@ -13,6 +13,7 @@ import ARKit
 class ViewController: UIViewController, ARSCNViewDelegate {
     
     var diceArray = [SCNNode]()
+    var planeNode = SCNNode()
     
     @IBOutlet var sceneView: ARSCNView!
     
@@ -79,7 +80,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                                            location.worldTransform.columns.3.z)
             
             diceArray.append(diceNode)
+            planeNode.removeFromParentNode()
             sceneView.scene.rootNode.addChildNode(diceNode)
+            
             roll(dice: diceNode)
         }
     }
@@ -107,7 +110,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
         
-        let planeNode = createPlane(withPlaneAnchor: planeAnchor)
+        planeNode = createPlane(withPlaneAnchor: planeAnchor)
         
         node.addChildNode(planeNode)
     }
@@ -116,7 +119,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     func createPlane(withPlaneAnchor planeAnchor: ARPlaneAnchor) -> SCNNode {
         let plane = SCNPlane(width: CGFloat(planeAnchor.extent.x), height: CGFloat(planeAnchor.extent.z))
         
-        let planeNode = SCNNode()
+        
         planeNode.position = SCNVector3(planeAnchor.center.x, 0, planeAnchor.center.z)
         
         // MakeRotation angle is in counter-clockwise radians, so to lay the vertical plan flat for horizontal plane need to adjust by 90degrees or pi/2 radians and negative to make it clockwise
